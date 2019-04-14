@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import tkinter as tk
 sns.set()
 
 user = 1
@@ -20,7 +21,7 @@ class Board():
 
     def count_right(self , row , col , ficha):
         sum = 0
-        while col<self.ncols:
+        while col<(self.ncols-1):
             if (self.board[row][col] == (-ficha) or (self.board[row][col] == 0)):
                 return sum
             else:
@@ -50,7 +51,7 @@ class Board():
 
     def count_down(self , row , col , ficha):
         sum = 0
-        while row<6:
+        while row<(self.nrows-1):
             if (self.board[row][col] == (-ficha) or (self.board[row][col] == 0)):
                 return sum
             else:
@@ -60,7 +61,7 @@ class Board():
 
     def count_up_right(self , row , col , ficha):
         sum = 0
-        while ((row>=0) or (col<self.ncols)):
+        while ((row>=0) and (col<(self.ncols-1))):
             if (self.board[row][col] == (-ficha) or (self.board[row][col] ==0)):
                 return sum
             else:
@@ -71,7 +72,7 @@ class Board():
 
     def count_up_left(self , row , col , ficha):
         sum = 0
-        while ((row>=0) or (col>=0)):
+        while ((row>=0) and (col>=0)):
             if (self.board[row][col] == (-ficha) or (self.board[row][col] ==0)):
                 return sum
             else:
@@ -82,7 +83,7 @@ class Board():
 
     def count_down_right(self , row , col , ficha):
         sum = 0
-        while ((row<self.nrows) or (col<self.ncols)):
+        while ((row<(self.nrows-1)) and (col<(self.ncols-1))):
             if (self.board[row][col] == (-ficha) or (self.board[row][col] ==0)):
                 return sum
             else:
@@ -93,8 +94,8 @@ class Board():
 
     def count_down_left(self , row , col , ficha):
         sum = 0
-        while ((row<self.nrows) or (col>=0)):
-            if (self.board[row][col] == (-ficha) or (self.board[row][col] ==0)):
+        while ((row<(self.nrows-1)) and (col>=0)):
+            if (self.board[row][col] == (-ficha) or (self.board[row][col] == 0)):
                 return sum
             else:
                 sum+=1
@@ -113,7 +114,6 @@ class Board():
 
     def count_diag_asc(self, row , col , ficha):
         return (self.count_up_right(row, col , ficha) + self.count_down_left(row + 1 , col - 1 , ficha ))
-
 
     def winner(self , row , col , ficha):
         if (self.count_horizontal(row , col , ficha ) == 4):
@@ -140,7 +140,7 @@ class Board():
         self.height[col] += 1
 
     def available_site(self, col):
-        if (self.height[col]<4):
+        if (self.height[col]<6):
             return 1
         return 0
 
@@ -156,78 +156,75 @@ class Board():
         win = 0
         turn = 0
         while win==0:
-            print(turn)
             if (turn%2==0):
                 print("User insert a col $$$$---> ")
                 col = int(input())-1
-                print(self.board[col])
-                print(self.height)
                 if self.available_site(col):
                     self.insert(user , col)
-                    win = self.winner(int(self.height[col]) , col , user)
-                    self.plot_configuration()
-                    test.print_board()
+                    win = self.winner(6-int(self.height[col]) , col , user)
+                    #self.plot_configuration()
+                    #test.print_board()
+                    turn += 1
                 else:
                     print("Incorrect Col")
-                    turn -= 1
+
             else:
                 print("Opponent turn insert a col $$$$----> ")
                 col = int(input())-1
                 if self.available_site(col):
                     self.insert(opp , col)
-                    win = self.winner(int(self.height[col]) , col , opp)
-                    self.plot_configuration()
+                    win = self.winner(6-int(self.height[col]) , col , opp)
+                    #self.plot_configuration()
+                    #test.print_board()
+                    turn += 1
                 else:
                     print("Incorrect Col")
-                    turn -= 1
-            turn += 1
+
         print("Game finished")
+        return
+class gui():
+    import tkinter as tk
+    import PIL
+    def __init__(self , master, cols , rows, board):
+        self.master = master
+        self.ncols = cols
+        self.nrows = rows
+        self.buttons = [[]]
+        self.board = board
+        self.red_ficha = tk.PhotoImage(file = "images/roja.png")
+        #self.blue_ficha = tk.PhotoImage(file = "images/azul.jpg")
+        for i in range(self.nrows):
+            buttonRow = []
+            for j in range(self.ncols):
+                button = tk.Button(self.master,text="placeholder",width=100,height=100).grid(row=i,column=j)
+                button.bind("<Button-1>",lambda: self.place_piece(ficha,col))
+                buttonRow.append(button)
+            self.buttons.append(buttonRow)
+    def rename_title(self):
+        self.master.title("Connect 4")
+    
+    def change_pic(labelname):
+        photo1 = ImageTk.PhotoImage(Image.open("images/roja.png"))
+        labelname.configure(image=photo1)
+        labelname.photo = photo1
+
+    def place_piece(self,event,ficha,col):
+        if self.board.available_site(col):
+            self.board.insert(ficha,col)
+            height = 6-int(self.board.height[col])
+            self.buttons[height][col].config(image=self.red_ficha,compound=tk.RIGHT)
+        else:
+            tk.messagebox.showinfo("Alert Message" , "This Column is already full")
+
+
+    def define_labels(self):
+        return 0
+
 
 if __name__ == "__main__":
-    test = Board(6,7)
-    test.evolve_game()
-    # test.insert(user , 2)
-    # test.print_board()
-    # test.insert(opp,2)
-    # test.print_board()
-    # test.insert(user , 2 )
-    # test.print_board()
-    # test.insert(opp , 2)
-    # test.print_board()
-    # test.insert(user , 4)
-    # test.print_board()
-    # test.insert(opp , 6)
-    # test.print_board()
-    # test.insert(user , 3)
-    # test.print_board()
-    # print("Right: " , test.count_right(-1, 2, user))
-    # print("Left : " , test.count_left(-1, 4, user))
-    # print("Up: " , test.count_up(5 , 2, user))
-    # print("Down : " , test.count_down( -1 , 2, user))
-    # test.insert(opp , 2)
-    # test.print_board()
-    # test.insert(opp,2)
-    # test.print_board()
-    # test.insert(opp , 2 )
-    # test.print_board()
-    # test.insert(opp , 2)
-    # test.print_board()
-    # test.insert(user , 4)
-    # test.print_board()
-    # test.insert(opp , 6)
-    # test.print_board()
-    # test.insert(user , 3)
-    # test.print_board()
-    # print("Right: " , test.count_right(-1, 2, user))
-    # print("Left : " , test.count_left(-1, 4, user))
-    # print("Up: " , test.count_up(2 , 2, opp))
-    # print("Down : " , test.count_down(0 , 2, opp))
-    # print("Right down: " , test.count_down_right(-2, 3, user))
-    # print("Left down: " , test.count_down_left(-2, 4, user))
-    # print("Up right : " , test.count_up_right(-1, 3, user))
-    # print("Up left : " , test.count_up_left(-1 , 3, user))
-    # print()
-    # print("Horizontal " , test.count_horizontal(-1 , 4 , user))
-    # print("Vertical  " , test.count_vertical(-1, 2 , opp))
-    # print("Ascentdet " , test.count_diag_asc(-1, 3 , user))
-    # print("Descente " , test.count_diag_desc(-2 , 3 , user))
+    #test.evolve_game()
+
+    windows = tk.Tk()
+    windows.geometry("1200x1000")
+    mainWIndow = gui(windows , 6 , 7,Board(6 , 7))
+    windows.mainloop()
