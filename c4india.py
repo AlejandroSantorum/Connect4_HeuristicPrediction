@@ -22,7 +22,7 @@ MAX_PLAYS = 35
 MIN_PLAYS = 5
 
 
-def generate_board():
+def generate_board_pattern():
 	board = ""
 	n_plays = randint(MIN_PLAYS, MAX_PLAYS)
 	for i in range(n_plays):
@@ -32,12 +32,12 @@ def generate_board():
 
 
 def scrape_main(n_examples):
-	first_pos = generate_board()
-	first_url = MAIN_URL + first_pos
+	first_pattern = generate_board_pattern()
+	first_url = MAIN_URL + first_pattern
 
 	#######################################
 	# delete print later
-	print(first_pos)
+	print(first_pattern)
 	#######################################
 
 	# Initializing webdriver (Chrome in this case)
@@ -62,7 +62,11 @@ def scrape_main(n_examples):
 				el = driver.find_element_by_xpath('//*[@id="sol' + str(j) + '"]')
 				#######################################
 				# delete print later
-				print(el.get_attribute('innerHTML'))
+				elem = el.get_attribute('innerHTML')
+				if elem == '':
+					print("Empty point")
+				else:
+					print(elem)
 
 			# Closing current tab
 			driver.close()
@@ -71,12 +75,12 @@ def scrape_main(n_examples):
 			driver.switch_to.window(next_tab)
 
 			# Random URL generator soon...
-			board = generate_board()
+			pattern = generate_board_pattern()
 			#######################################
 			# delete print later
-			print(board)
+			print(pattern)
 			#######################################
-			next_url = MAIN_URL+board
+			next_url = MAIN_URL+pattern
 			driver.get(next_url)
 
 	except Exception as err:
@@ -86,8 +90,6 @@ def scrape_main(n_examples):
 		return
 
 
-M = 10
+M = 2
 if __name__ == "__main__":
 	scrape_main(M)
-
-

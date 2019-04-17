@@ -117,16 +117,16 @@ class Board():
 
     def winner(self , row , col , ficha):
         if (self.count_horizontal(row , col , ficha ) == 4):
-            print("Winner :: " , ficha )
+            #print("Winner :: " , ficha )
             return ficha
         if (self.count_vertical(row , col , ficha ) == 4):
-            print("Winner:: " , ficha )
+            #print("Winner:: " , ficha )
             return ficha
         if (self.count_diag_asc(row, col , ficha)==4):
-            print("Winner:: " , ficha )
+            #print("Winner:: " , ficha )
             return ficha
         if (self.count_diag_desc(row , col , ficha)==4):
-            print("Winner:: " , ficha)
+            #print("Winner:: " , ficha)
             return ficha
         return 0
 
@@ -182,6 +182,8 @@ class Board():
 
         print("Game finished")
         return
+
+
 class gui():
     import tkinter as tk
     import PIL
@@ -202,7 +204,7 @@ class gui():
             self.buttons.append(buttonRow)
     def rename_title(self):
         self.master.title("Connect 4")
-    
+
     def change_pic(labelname):
         photo1 = ImageTk.PhotoImage(Image.open("images/roja.png"))
         labelname.configure(image=photo1)
