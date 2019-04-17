@@ -233,18 +233,43 @@ class Board():
                                 counter += 1.0
         return acum/counter
 
-    def _frac_zone(self, ini_col_ind, fin_col_ind, piece):
+    def _frac_zone(self, piece, ini_col_ind, fin_col_ind):
         allied = 0
         enemy = 0
         i = ini_col_ind
         while i <= fin_col_ind:
             allied += self.count_vertical(0, i, piece)
             enemy += self.count_vertical(0, i, -piece)
-        return allied/enemy ### GOTTA BE CHANGED
+            i += 1
+        allied -= enemy
+        return 5 + 0.5*allied
 
-    def calculate_features(self, piece):
-        print("2: ", self._calculate_N_in_a_row(piece, 2))
-        print("3: ", self._calculate_N_in_a_row(piece, 3))
+    def calculate_features_board(self, piece):
+        features = []
+        # Total number of pieces
+        features.append(sum(self.height))
+        # Ally mean distance
+        features.append(self._mean_distance(piece))
+        # Opponent mean distance
+        features.append(self._mean_distance(-piece))
+        # Ally #2-in-a-row
+        block, eff = self._calculate_N_in_a_row(piece, 2)
+        features.append(block)
+        features.append(eff)
+        # Opponent #2-in-a-row
+        block, eff = self._calculate_N_in_a_row(-piece, 2)
+        features.append(block)
+        features.append(eff)
+        # Ally #3-in-a-row
+        block, eff = self._calculate_N_in_a_row(piece, 3)
+        features.append(block)
+        features.append(eff)
+        # Opponent #3-in-a-row
+        block, eff = self._calculate_N_in_a_row(-piece, 3)
+        features.append(block)
+        features.append(eff)
+        return features
+
 
     def available_site(self, col):
         if (self.height[col]<6):
@@ -341,7 +366,8 @@ if __name__ == "__main__":
     board.build_pattern("17263")
     board.print_board()
 
-    board.calculate_features(1)
+    features = board.calculate_features_board(1)
+    print(features)
 
     ###################################################
     # TESTING GUI

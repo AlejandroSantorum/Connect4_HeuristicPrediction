@@ -90,6 +90,30 @@ def scrape_main(n_examples):
 		return
 
 
+def get_points(pattern):
+	points = []
+	# Preparing url
+	url = MAIN_URL+pattern
+	# Initializing webdriver (Chrome in this case)
+	driver = webdriver.Chrome()
+	# Opening it for the first time
+	driver.get(url)
+	# Get button you are going to click by its id ( also you could us find_element_by_css_selector to get element by css selector)
+	button_element = driver.find_element_by_id('hide_solution_div')
+	# Getting points
+	time.sleep(SLEEP_TIME)
+	for j in range(0,7):
+		el = driver.find_element_by_xpath('//*[@id="sol' + str(j) + '"]')
+		#######################################
+		# delete print later
+		elem = el.get_attribute('innerHTML')
+		if elem == '':
+			points.append("-")
+		else:
+			points.append(elem)
+	return points
+
 M = 2
 if __name__ == "__main__":
-	scrape_main(M)
+	#scrape_main(M)
+	print(get_points("34435542321112"))
