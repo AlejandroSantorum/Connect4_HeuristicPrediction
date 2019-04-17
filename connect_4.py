@@ -19,50 +19,50 @@ class Board():
         print(self.board)
         print()
 
-    def count_right(self , row , col , ficha):
+    def count_right(self , row , col , piece):
         sum = 0
         while col<(self.ncols-1):
-            if (self.board[row][col] == (-ficha) or (self.board[row][col] == 0)):
+            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
                 return sum
             else:
                 sum += 1
             col += 1
         return sum
 
-    def count_left(self , row , col , ficha):
+    def count_left(self , row , col , piece):
         sum = 0
         while col>=0:
-            if (self.board[row][col] == (-ficha) or (self.board[row][col] == 0)):
+            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
                 return sum
             else:
                 sum += 1
             col -= 1
         return sum
 
-    def count_up(self , row , col , ficha):
+    def count_up(self , row , col , piece):
         sum = 0
         while row>=0:
-            if (self.board[row][col] == (-ficha) or (self.board[row][col] == 0)):
+            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
                 return sum
             else:
                 sum += 1
             row -= 1
         return sum
 
-    def count_down(self , row , col , ficha):
+    def count_down(self , row , col , piece):
         sum = 0
         while row<(self.nrows-1):
-            if (self.board[row][col] == (-ficha) or (self.board[row][col] == 0)):
+            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
                 return sum
             else:
                 sum += 1
             row += 1
         return sum
 
-    def count_up_right(self , row , col , ficha):
+    def count_up_right(self , row , col , piece):
         sum = 0
         while ((row>=0) and (col<(self.ncols-1))):
-            if (self.board[row][col] == (-ficha) or (self.board[row][col] ==0)):
+            if (self.board[row][col] == (-piece) or (self.board[row][col] ==0)):
                 return sum
             else:
                 sum+=1
@@ -70,10 +70,10 @@ class Board():
             col += 1
         return sum
 
-    def count_up_left(self , row , col , ficha):
+    def count_up_left(self , row , col , piece):
         sum = 0
         while ((row>=0) and (col>=0)):
-            if (self.board[row][col] == (-ficha) or (self.board[row][col] ==0)):
+            if (self.board[row][col] == (-piece) or (self.board[row][col] ==0)):
                 return sum
             else:
                 sum+=1
@@ -81,10 +81,10 @@ class Board():
             col -= 1
         return sum
 
-    def count_down_right(self , row , col , ficha):
+    def count_down_right(self , row , col , piece):
         sum = 0
         while ((row<(self.nrows-1)) and (col<(self.ncols-1))):
-            if (self.board[row][col] == (-ficha) or (self.board[row][col] ==0)):
+            if (self.board[row][col] == (-piece) or (self.board[row][col] ==0)):
                 return sum
             else:
                 sum+=1
@@ -92,10 +92,10 @@ class Board():
             col += 1
         return sum
 
-    def count_down_left(self , row , col , ficha):
+    def count_down_left(self , row , col , piece):
         sum = 0
         while ((row<(self.nrows-1)) and (col>=0)):
-            if (self.board[row][col] == (-ficha) or (self.board[row][col] == 0)):
+            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
                 return sum
             else:
                 sum+=1
@@ -103,41 +103,63 @@ class Board():
             col -= 1
         return sum
 
-    def count_horizontal(self , row , col , ficha):
-        return (self.count_left(row , col , ficha) + self.count_right(row , col+1 , ficha))
+    def count_horizontal(self , row , col , piece):
+        return (self.count_left(row , col , piece) + self.count_right(row , col+1 , piece))
 
-    def count_vertical(self , row , col , ficha):
-        return (self.count_up(row , col , ficha) + self.count_down(row+1 , col , ficha))
+    def count_vertical(self , row , col , piece):
+        return (self.count_up(row , col , piece) + self.count_down(row+1 , col , piece))
 
-    def count_diag_desc(self , row , col , ficha):
-        return (self.count_down_right(row , col ,ficha ) + self.count_up_left(row -1 , col - 1 , ficha) )
+    def count_diag_desc(self , row , col , piece):
+        return (self.count_down_right(row , col ,piece ) + self.count_up_left(row -1 , col - 1 , piece) )
 
-    def count_diag_asc(self, row , col , ficha):
-        return (self.count_up_right(row, col , ficha) + self.count_down_left(row + 1 , col - 1 , ficha ))
+    def count_diag_asc(self, row , col , piece):
+        return (self.count_up_right(row, col , piece) + self.count_down_left(row + 1 , col - 1 , piece ))
 
-    def winner(self , row , col , ficha):
-        if (self.count_horizontal(row , col , ficha ) == 4):
-            #print("Winner :: " , ficha )
-            return ficha
-        if (self.count_vertical(row , col , ficha ) == 4):
-            #print("Winner:: " , ficha )
-            return ficha
-        if (self.count_diag_asc(row, col , ficha)==4):
-            #print("Winner:: " , ficha )
-            return ficha
-        if (self.count_diag_desc(row , col , ficha)==4):
-            #print("Winner:: " , ficha)
-            return ficha
+    def winner(self , row , col , piece):
+        if (self.count_horizontal(row , col , piece ) == 4):
+            #print("Winner :: " , piece )
+            return piece
+        if (self.count_vertical(row , col , piece ) == 4):
+            #print("Winner:: " , piece )
+            return piece
+        if (self.count_diag_asc(row, col , piece)==4):
+            #print("Winner:: " , piece )
+            return piece
+        if (self.count_diag_desc(row , col , piece)==4):
+            #print("Winner:: " , piece)
+            return piece
         return 0
 
-    def insert(self , ficha , col):
-        #check before inserting a new ficha
+    def insert(self , piece , col):
+        #check before inserting a new piece
         counter = 0
         for i in range(self.nrows):
             counter += np.abs(self.board[i][col])
         pos = 6 - (counter+1)
-        self.board[int(pos)][col] = ficha
+        self.board[int(pos)][col] = piece
         self.height[col] += 1
+        return int(pos)
+
+    def go_back(self, col):
+        for i in range(self.nrows):
+            if self.board[i][col] != 0:
+                self.board[i][col] = 0
+                return
+
+    def build_pattern(self, pattern):
+        length = len(pattern)
+        current_board = ""
+        current_piece = 1
+        for i in range(length):
+            col_move = int(pattern[i])-1
+            inserted_row = self.insert(current_piece, col_move)
+            if self.winner(inserted_row, col_move, current_piece):
+                self.go_back(col_move)
+                return current_board, current_piece
+            current_board += pattern[i]
+            current_piece = 0-current_piece # Swaping player move
+        return current_board, current_piece
+
 
     def available_site(self, col):
         if (self.height[col]<6):
@@ -193,13 +215,13 @@ class gui():
         self.nrows = rows
         self.buttons = [[]]
         self.board = board
-        self.red_ficha = tk.PhotoImage(file = "images/roja.png")
-        #self.blue_ficha = tk.PhotoImage(file = "images/azul.jpg")
+        self.red_piece = tk.PhotoImage(file = "images/roja.png")
+        #self.blue_piece = tk.PhotoImage(file = "images/azul.jpg")
         for i in range(self.nrows):
             buttonRow = []
             for j in range(self.ncols):
                 button = tk.Button(self.master,text="placeholder",width=100,height=100).grid(row=i,column=j)
-                button.bind("<Button-1>",lambda: self.place_piece(ficha,col))
+                button.bind("<Button-1>",lambda: self.place_piece(piece,col))
                 buttonRow.append(button)
             self.buttons.append(buttonRow)
     def rename_title(self):
@@ -210,11 +232,11 @@ class gui():
         labelname.configure(image=photo1)
         labelname.photo = photo1
 
-    def place_piece(self,event,ficha,col):
+    def place_piece(self,event,piece,col):
         if self.board.available_site(col):
-            self.board.insert(ficha,col)
+            self.board.insert(piece,col)
             height = 6-int(self.board.height[col])
-            self.buttons[height][col].config(image=self.red_ficha,compound=tk.RIGHT)
+            self.buttons[height][col].config(image=self.red_piece,compound=tk.RIGHT)
         else:
             tk.messagebox.showinfo("Alert Message" , "This Column is already full")
 
@@ -224,9 +246,29 @@ class gui():
 
 
 if __name__ == "__main__":
-    #test.evolve_game()
+    ###################################################
+    # TESTING BUILD_PATTERN AND GET FEATURES
+    nrows = 6
+    ncols = 7
+    board = Board(nrows, ncols)
+    board.print_board()
 
-    windows = tk.Tk()
-    windows.geometry("1200x1000")
-    mainWIndow = gui(windows , 6 , 7,Board(6 , 7))
-    windows.mainloop()
+    final_pattern, moving_now = board.build_pattern("16742126666422424121313332332211121")
+    board.print_board()
+    print("Final pattern: ", final_pattern)
+    print("Now moves: ", moving_now)
+    print("\n___________________________________\n")
+
+    board2 = Board(nrows, ncols)
+    final_pattern2, moving_now2= board2.build_pattern("1674212664")
+    board2.print_board()
+    print("Final pattern: ", final_pattern2)
+    print("Now moves: ", moving_now2)
+
+    ###################################################
+    # TESTING GUI
+    #test.evolve_game()
+    #windows = tk.Tk()
+    #windows.geometry("1200x1000")
+    #mainWIndow = gui(windows , 6 , 7,Board(6 , 7))
+    #windows.mainloop()
