@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 import seaborn as sns
 import tkinter as tk
@@ -22,7 +23,7 @@ class Board():
     def count_right(self , row , col , piece):
         sum = 0
         while col<(self.ncols-1):
-            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
+            if (self.board[row][col] != piece):
                 return sum
             else:
                 sum += 1
@@ -32,7 +33,7 @@ class Board():
     def count_left(self , row , col , piece):
         sum = 0
         while col>=0:
-            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
+            if (self.board[row][col] != piece):
                 return sum
             else:
                 sum += 1
@@ -42,7 +43,7 @@ class Board():
     def count_up(self , row , col , piece):
         sum = 0
         while row>=0:
-            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
+            if (self.board[row][col] != piece):
                 return sum
             else:
                 sum += 1
@@ -52,7 +53,7 @@ class Board():
     def count_down(self , row , col , piece):
         sum = 0
         while row<(self.nrows-1):
-            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
+            if (self.board[row][col] != piece):
                 return sum
             else:
                 sum += 1
@@ -62,7 +63,7 @@ class Board():
     def count_up_right(self , row , col , piece):
         sum = 0
         while ((row>=0) and (col<(self.ncols-1))):
-            if (self.board[row][col] == (-piece) or (self.board[row][col] ==0)):
+            if (self.board[row][col] != piece):
                 return sum
             else:
                 sum+=1
@@ -73,7 +74,7 @@ class Board():
     def count_up_left(self , row , col , piece):
         sum = 0
         while ((row>=0) and (col>=0)):
-            if (self.board[row][col] == (-piece) or (self.board[row][col] ==0)):
+            if (self.board[row][col] != piece):
                 return sum
             else:
                 sum+=1
@@ -84,7 +85,7 @@ class Board():
     def count_down_right(self , row , col , piece):
         sum = 0
         while ((row<(self.nrows-1)) and (col<(self.ncols-1))):
-            if (self.board[row][col] == (-piece) or (self.board[row][col] ==0)):
+            if (self.board[row][col] != piece):
                 return sum
             else:
                 sum+=1
@@ -95,7 +96,7 @@ class Board():
     def count_down_left(self , row , col , piece):
         sum = 0
         while ((row<(self.nrows-1)) and (col>=0)):
-            if (self.board[row][col] == (-piece) or (self.board[row][col] == 0)):
+            if (self.board[row][col] != piece):
                 return sum
             else:
                 sum+=1
@@ -159,6 +160,45 @@ class Board():
             current_board += pattern[i]
             current_piece = 0-current_piece # Swaping player move
         return current_board, current_piece
+
+    def _calculate_2R(self, piece):
+        counter = 0
+        for i in range(self.nrows):
+            for j in range(self.ncols):
+                if self.count_right(i, j, piece) >= 2:
+                    counter += 1
+                if self.count_left(i, j, piece) >= 2:
+                    counter += 1
+                if self.count_up(i, j, piece) >= 2:
+                    counter += 1
+                if self.count_down(i, j, piece) >= 2:
+                    counter += 1
+                if self.count_up_right(i, j, piece) >= 2:
+                    counter += 1
+                if self.count_up_left(i, j, piece) >= 2:
+                    counter += 1
+                if self.count_down_right(i, j, piece) >= 2:
+                    counter += 1
+                if self.count_down_left(i, j, piece) >= 2:
+                    counter += 1
+        return counter
+
+    def _mean_distance(self, piece):
+        acum = 0.0
+        counter = 0.0
+        for i in range(self.nrows):
+            for j in range(self.ncols):
+                if self.board[i][j] == piece:
+                    for k in range(self.nrows):
+                        for l in range(self.ncols):
+                            if self.board[k][l]==piece and (k!=i or l!=j):
+                                # Euclidean norm
+                                acum += math.sqrt(((i-k)**2)+((j-l)**2))
+                                counter += 1.0
+        return acum/counter
+
+
+    def calculate_features(self, piece):
 
 
     def available_site(self, col):
@@ -253,17 +293,8 @@ if __name__ == "__main__":
     board = Board(nrows, ncols)
     board.print_board()
 
-    final_pattern, moving_now = board.build_pattern("16742126666422424121313332332211121")
+    board.build_pattern("1155333")
     board.print_board()
-    print("Final pattern: ", final_pattern)
-    print("Now moves: ", moving_now)
-    print("\n___________________________________\n")
-
-    board2 = Board(nrows, ncols)
-    final_pattern2, moving_now2= board2.build_pattern("1674212664")
-    board2.print_board()
-    print("Final pattern: ", final_pattern2)
-    print("Now moves: ", moving_now2)
 
     ###################################################
     # TESTING GUI
