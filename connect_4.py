@@ -197,6 +197,14 @@ class Board():
                                 counter += 1.0
         return acum/counter
 
+    def _frac_zone(self, ini_col_ind, fin_col_ind, piece):
+        allied = 0
+        enemy = 0
+        i = ini_col_ind
+        while i <= fin_col_ind:
+            allied += self.count_vertical(0, i, piece)
+            enemy += self.count_vertical(0, i, -piece)
+        return allied/enemy ### GOTTA BE CHANGED
 
     def calculate_features(self, piece):
 
