@@ -5,8 +5,11 @@ import seaborn as sns
 import tkinter as tk
 sns.set()
 
-user = 1
-opp  = -1
+USER = 1
+OPP  = -1
+WALL = -2
+COUNTED = 0
+STOP_REASON = 1
 
 class Board():
 
@@ -24,97 +27,97 @@ class Board():
         sum = 0
         while col<(self.ncols-1):
             if (self.board[row][col] != piece):
-                return sum
+                return sum, self.board[row][col]
             else:
                 sum += 1
             col += 1
-        return sum
+        return sum, WALL
 
     def count_left(self , row , col , piece):
         sum = 0
         while col>=0:
             if (self.board[row][col] != piece):
-                return sum
+                return sum, self.board[row][col]
             else:
                 sum += 1
             col -= 1
-        return sum
+        return sum, WALL
 
     def count_up(self , row , col , piece):
         sum = 0
         while row>=0:
             if (self.board[row][col] != piece):
-                return sum
+                return sum, self.board[row][col]
             else:
                 sum += 1
             row -= 1
-        return sum
+        return sum, WALL
 
     def count_down(self , row , col , piece):
         sum = 0
         while row<(self.nrows-1):
             if (self.board[row][col] != piece):
-                return sum
+                return sum, self.board[row][col]
             else:
                 sum += 1
             row += 1
-        return sum
+        return sum, WALL
 
     def count_up_right(self , row , col , piece):
         sum = 0
         while ((row>=0) and (col<(self.ncols-1))):
             if (self.board[row][col] != piece):
-                return sum
+                return sum, self.board[row][col]
             else:
                 sum+=1
             row -= 1
             col += 1
-        return sum
+        return sum, WALL
 
     def count_up_left(self , row , col , piece):
         sum = 0
         while ((row>=0) and (col>=0)):
             if (self.board[row][col] != piece):
-                return sum
+                return sum, self.board[row][col]
             else:
                 sum+=1
             row -= 1
             col -= 1
-        return sum
+        return sum, WALL
 
     def count_down_right(self , row , col , piece):
         sum = 0
         while ((row<(self.nrows-1)) and (col<(self.ncols-1))):
             if (self.board[row][col] != piece):
-                return sum
+                return sum, self.board[row][col]
             else:
                 sum+=1
             row += 1
             col += 1
-        return sum
+        return sum, WALL
 
     def count_down_left(self , row , col , piece):
         sum = 0
         while ((row<(self.nrows-1)) and (col>=0)):
             if (self.board[row][col] != piece):
-                return sum
+                return sum, self.board[row][col]
             else:
                 sum+=1
             row += 1
             col -= 1
-        return sum
+        return sum, WALL
 
     def count_horizontal(self , row , col , piece):
-        return (self.count_left(row , col , piece) + self.count_right(row , col+1 , piece))
+        return (self.count_left(row , col , piece)[COUNTED] + self.count_right(row , col+1 , piece)[COUNTED])
 
     def count_vertical(self , row , col , piece):
-        return (self.count_up(row , col , piece) + self.count_down(row+1 , col , piece))
+        return (self.count_up(row , col , piece)[COUNTED] + self.count_down(row+1 , col , piece)[COUNTED])
 
     def count_diag_desc(self , row , col , piece):
-        return (self.count_down_right(row , col ,piece ) + self.count_up_left(row -1 , col - 1 , piece) )
+        return (self.count_down_right(row , col ,piece )[COUNTED] + self.count_up_left(row -1 , col - 1 , piece)[COUNTED])
 
     def count_diag_asc(self, row , col , piece):
-        return (self.count_up_right(row, col , piece) + self.count_down_left(row + 1 , col - 1 , piece ))
+        return (self.count_up_right(row, col , piece)[COUNTED] + self.count_down_left(row + 1 , col - 1 , piece )[COUNTED])
 
     def winner(self , row , col , piece):
         if (self.count_horizontal(row , col , piece ) == 4):
@@ -123,10 +126,10 @@ class Board():
         if (self.count_vertical(row , col , piece ) == 4):
             #print("Winner:: " , piece )
             return piece
-        if (self.count_diag_asc(row, col , piece)==4):
+        if (self.count_diag_asc(row, col , piece) == 4):
             #print("Winner:: " , piece )
             return piece
-        if (self.count_diag_desc(row , col , piece)==4):
+        if (self.count_diag_desc(row , col , piece) == 4):
             #print("Winner:: " , piece)
             return piece
         return 0
@@ -161,27 +164,60 @@ class Board():
             current_piece = 0-current_piece # Swaping player move
         return current_board, current_piece
 
-    def _calculate_2R(self, piece):
-        counter = 0
+    def _calculate_N_in_a_row(self, piece, N):
+        blocked = 0
+        effective = 0
         for i in range(self.nrows):
             for j in range(self.ncols):
-                if self.count_right(i, j, piece) >= 2:
-                    counter += 1
-                if self.count_left(i, j, piece) >= 2:
-                    counter += 1
-                if self.count_up(i, j, piece) >= 2:
-                    counter += 1
-                if self.count_down(i, j, piece) >= 2:
-                    counter += 1
-                if self.count_up_right(i, j, piece) >= 2:
-                    counter += 1
-                if self.count_up_left(i, j, piece) >= 2:
-                    counter += 1
-                if self.count_down_right(i, j, piece) >= 2:
-                    counter += 1
-                if self.count_down_left(i, j, piece) >= 2:
-                    counter += 1
-        return counter
+                sum, obstacle = self.count_right(i, j, piece)
+                if sum == N:
+                    if obstacle == 0:
+                        effective += 1
+                    else:
+                        blocked += 1
+                sum, obstacle = self.count_left(i, j, piece)
+                if sum == N:
+                    if obstacle == 0:
+                        effective += 1
+                    else:
+                        blocked += 1
+                sum, obstacle = self.count_up(i, j, piece)
+                if sum == N:
+                    if obstacle == 0:
+                        effective += 1
+                    else:
+                        blocked += 1
+                sum, obstacle = self.count_down(i, j, piece)
+                if sum == N:
+                    if obstacle == 0:
+                        effective += 1
+                    else:
+                        blocked += 1
+                sum, obstacle = self.count_up_right(i, j, piece)
+                if sum == N:
+                    if obstacle == 0:
+                        effective += 1
+                    else:
+                        blocked += 1
+                sum, obstacle = self.count_up_left(i, j, piece)
+                if sum == N:
+                    if obstacle == 0:
+                        effective += 1
+                    else:
+                        blocked += 1
+                sum, obstacle = self.count_down_right(i, j, piece)
+                if sum == N:
+                    if obstacle == 0:
+                        effective += 1
+                    else:
+                        blocked += 1
+                sum, obstacle = self.count_down_left(i, j, piece)
+                if sum == N:
+                    if obstacle == 0:
+                        effective += 1
+                    else:
+                        blocked += 1
+        return blocked, effective
 
     def _mean_distance(self, piece):
         acum = 0.0
@@ -207,7 +243,8 @@ class Board():
         return allied/enemy ### GOTTA BE CHANGED
 
     def calculate_features(self, piece):
-
+        print("2: ", self._calculate_N_in_a_row(piece, 2))
+        print("3: ", self._calculate_N_in_a_row(piece, 3))
 
     def available_site(self, col):
         if (self.height[col]<6):
@@ -230,8 +267,8 @@ class Board():
                 print("User insert a col $$$$---> ")
                 col = int(input())-1
                 if self.available_site(col):
-                    self.insert(user , col)
-                    win = self.winner(6-int(self.height[col]) , col , user)
+                    self.insert(USER , col)
+                    win = self.winner(6-int(self.height[col]) , col , USER)
                     #self.plot_configuration()
                     #test.print_board()
                     turn += 1
@@ -242,8 +279,8 @@ class Board():
                 print("Opponent turn insert a col $$$$----> ")
                 col = int(input())-1
                 if self.available_site(col):
-                    self.insert(opp , col)
-                    win = self.winner(6-int(self.height[col]) , col , opp)
+                    self.insert(OPP , col)
+                    win = self.winner(6-int(self.height[col]) , col , OPP)
                     #self.plot_configuration()
                     #test.print_board()
                     turn += 1
@@ -301,8 +338,10 @@ if __name__ == "__main__":
     board = Board(nrows, ncols)
     board.print_board()
 
-    board.build_pattern("1155333")
+    board.build_pattern("17263")
     board.print_board()
+
+    board.calculate_features(1)
 
     ###################################################
     # TESTING GUI
