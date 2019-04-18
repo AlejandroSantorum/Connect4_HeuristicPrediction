@@ -34,6 +34,8 @@ def generate_board_pattern():
 
 
 def scrape_main(n_examples):
+	start_time = time.time()
+
 	pattern = generate_board_pattern()
 	first_url = MAIN_URL + pattern
 
@@ -91,6 +93,8 @@ def scrape_main(n_examples):
 		print("Something went wrong at iteration: "+str(i)+" ==> " + str(err))
 	finally:
 		driver.quit()
+		end_time = time.time()
+		print(end_time - start_time)
 		return
 
 
@@ -123,7 +127,7 @@ def get_points(pattern):
 	finally:
 		driver.quit()
 
-M = 5
+M = 1000
 if __name__ == "__main__":
 	#scrape_main(M)
 	print(scrape_main(M))

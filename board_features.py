@@ -40,6 +40,8 @@ def features_main(pattern, points_array):
                 features_array = board.get_features(current_piece)
                 # Getting the father state
                 board.go_back(i)
+                # Adding points
+                features_array.append(points[i])
                 # Writing features in a file
                 store_features(FEATURES_FILE, features_array)
 
@@ -54,5 +56,7 @@ def features_main(pattern, points_array):
                 features_array = board.get_features(current_piece)
                 # Getting the father state
                 board.go_back(i)
+                # Adding points
+                features_array.append(points[i])
                 # Writing features in a file
                 store_features(FEATURES_FILE, features_array)
