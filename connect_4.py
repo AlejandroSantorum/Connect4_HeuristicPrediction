@@ -244,7 +244,7 @@ class Board():
         allied -= enemy
         return 5 + 0.5*allied
 
-    def calculate_features_board(self, piece):
+    def get_features(self, piece):
         features = []
         # Total number of pieces
         features.append(sum(self.height))
@@ -366,7 +366,7 @@ if __name__ == "__main__":
     board.build_pattern("17263")
     board.print_board()
 
-    features = board.calculate_features_board(1)
+    features = board.get_features(1)
     print(features)
 
     ###################################################

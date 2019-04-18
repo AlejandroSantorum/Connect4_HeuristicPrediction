@@ -1,9 +1,11 @@
 import time
+import threading as thr
 from random import randint
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from board_features import *
 
 
 SLEEP_TIME = 0.65
@@ -32,12 +34,12 @@ def generate_board_pattern():
 
 
 def scrape_main(n_examples):
-	first_pattern = generate_board_pattern()
-	first_url = MAIN_URL + first_pattern
+	pattern = generate_board_pattern()
+	first_url = MAIN_URL + pattern
 
 	#######################################
 	# delete print later
-	print(first_pattern)
+	print(pattern)
 	#######################################
 
 	# Initializing webdriver (Chrome in this case)
@@ -58,15 +60,17 @@ def scrape_main(n_examples):
 
 			# Getting points
 			time.sleep(SLEEP_TIME)
+			points_array = []
 			for j in range(0,7):
-				el = driver.find_element_by_xpath('//*[@id="sol' + str(j) + '"]')
-				#######################################
-				# delete print later
-				elem = el.get_attribute('innerHTML')
-				if elem == '':
-					print("Empty point")
-				else:
-					print(elem)
+				elem = driver.find_element_by_xpath('//*[@id="sol' + str(j) + '"]')
+				points_array.append(elem.get_attribute('innerHTML'))
+
+			# Creating a new thread to calculate and store features
+			features_thread = thr.Thread(
+				target = features_main,
+				args = (pattern, points_array,)
+			)
+			features_thread.start()
 
 			# Closing current tab
 			driver.close()
@@ -74,7 +78,7 @@ def scrape_main(n_examples):
 			# Switching tabs
 			driver.switch_to.window(next_tab)
 
-			# Random URL generator soon...
+			# Random URL generator
 			pattern = generate_board_pattern()
 			#######################################
 			# delete print later
@@ -91,29 +95,35 @@ def scrape_main(n_examples):
 
 
 def get_points(pattern):
-	points = []
-	# Preparing url
-	url = MAIN_URL+pattern
-	# Initializing webdriver (Chrome in this case)
-	driver = webdriver.Chrome()
-	# Opening it for the first time
-	driver.get(url)
-	# Get button you are going to click by its id ( also you could us find_element_by_css_selector to get element by css selector)
-	button_element = driver.find_element_by_id('hide_solution_div')
-	# Getting points
-	time.sleep(SLEEP_TIME)
-	for j in range(0,7):
-		el = driver.find_element_by_xpath('//*[@id="sol' + str(j) + '"]')
-		#######################################
-		# delete print later
-		elem = el.get_attribute('innerHTML')
-		if elem == '':
-			points.append("-")
-		else:
-			points.append(elem)
-	return points
+	try:
+		points = []
+		# Preparing url
+		url = MAIN_URL+pattern
+		# Initializing webdriver (Chrome in this case)
+		driver = webdriver.Chrome()
+		# Opening it for the first time
+		driver.get(url)
+		# Get button you are going to click by its id ( also you could us find_element_by_css_selector to get element by css selector)
+		button_element = driver.find_element_by_id('hide_solution_div')
+		# Getting points
+		time.sleep(SLEEP_TIME)
+		for j in range(0,7):
+			el = driver.find_element_by_xpath('//*[@id="sol' + str(j) + '"]')
+			#######################################
+			# delete print later
+			elem = el.get_attribute('innerHTML')
+			if elem == '':
+				points.append("-")
+			else:
+				points.append(elem)
+		driver.close()
+		return points
+	except Exception as err:
+		print("Something went wrong getting points of a finished board: ", err)
+	finally:
+		driver.quit()
 
-M = 2
+M = 5
 if __name__ == "__main__":
 	#scrape_main(M)
-	print(get_points("34435542321112"))
+	print(scrape_main(M))
