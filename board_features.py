@@ -13,7 +13,7 @@ def store_features(filename, features_array):
     lock.acquire()
     # Writing file
     f = open(filename, "a")
-    f.write(str(features_array)) #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    f.write(str(features_array)[1:len(str(features_array))-1]) #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     f.write("\n")
     f.close()
     # Green light
@@ -41,7 +41,7 @@ def features_main(pattern, points_array):
                 # Getting the father state
                 board.go_back(i)
                 # Adding points
-                features_array.append(points[i])
+                features_array.append(int(points[i]))
                 # Writing features in a file
                 store_features(FEATURES_FILE, features_array)
 
@@ -57,6 +57,6 @@ def features_main(pattern, points_array):
                 # Getting the father state
                 board.go_back(i)
                 # Adding points
-                features_array.append(points[i])
+                features_array.append(int(points_array[i]))
                 # Writing features in a file
                 store_features(FEATURES_FILE, features_array)

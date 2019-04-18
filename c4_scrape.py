@@ -1,4 +1,5 @@
 import time
+import sys
 import threading as thr
 from random import randint
 from selenium import webdriver
@@ -88,14 +89,14 @@ def scrape_main(n_examples):
 			#######################################
 			next_url = MAIN_URL+pattern
 			driver.get(next_url)
-
+		return n_examples
 	except Exception as err:
 		print("Something went wrong at iteration: "+str(i)+" ==> " + str(err))
+		return i
 	finally:
 		driver.quit()
 		end_time = time.time()
-		print(end_time - start_time)
-		return
+		print("Time used: "+str(end_time - start_time)+" seconds")
 
 
 def get_points(pattern):
@@ -127,7 +128,12 @@ def get_points(pattern):
 	finally:
 		driver.quit()
 
-M = 1000
+
 if __name__ == "__main__":
+	M = 2
+	if len(sys.argv) > 1:
+		M = int(sys.argv[1])
 	#scrape_main(M)
-	print(scrape_main(M))
+	ret = scrape_main(M)
+	print("Ret in python: ", ret)
+	sys.exit(ret)
