@@ -1,6 +1,6 @@
 #!/bin/bash
 
-M=4000
+M=17000
 Aux=$M
 while [ true ]
 do
