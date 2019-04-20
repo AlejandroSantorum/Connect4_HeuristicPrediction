@@ -5,7 +5,14 @@ import threading as thr
 NROWS = 6
 NCOLS = 7
 FEATURES_FILE = "feed_the_beast.csv"
+LEGEND_FILE = "N_PIECES  ALLY_MEAN_DIST  OPP_MEAN_DIST  ALLY_#2_BLCK  ALLY_#2_EFF  OPP_#2_BLCK  OPP_#2_EFF  ALLY_#3_BLCK  ALLY_#3_EFF  OPP_#3_BLCK  OPP_#3_EFF\n"
 lock = thr.Lock() # semaphore
+
+
+def init_features_file():
+    f = open(FEATURES_FILE, "a")
+    f.write(LEGEND_FILE)
+    f.close()
 
 
 def store_features(filename, features_array):
@@ -13,7 +20,7 @@ def store_features(filename, features_array):
     lock.acquire()
     # Writing file
     f = open(filename, "a")
-    f.write(str(features_array)[1:len(str(features_array))-1]) #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    f.write(str(features_array)[1:len(str(features_array))-1])
     f.write("\n")
     f.close()
     # Green light

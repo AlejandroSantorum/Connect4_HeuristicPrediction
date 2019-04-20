@@ -130,15 +130,13 @@ def get_points(pattern):
 
 
 if __name__ == "__main__":
-	M = 2
-	if len(sys.argv) > 1:
-		M = int(sys.argv[1])
-
+	M = 20000
+	init_features_file()
 	# Preparing counter in error case
 	exec_times = 0
 	aux_counter = M
 	while aux_counter > 0:
-		ret = scrape_main(M)
+		ret = scrape_main(aux_counter)
 		exec_times += 1
 		print("Return from scrape_main (time "+str(exec_times)+"): "+str(ret))
 		aux_counter -= ret
