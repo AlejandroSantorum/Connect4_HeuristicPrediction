@@ -244,6 +244,92 @@ class Board():
         allied -= enemy
         return 5 + 0.5*allied
 
+    def _vertical_groups_of_4(self, piece, n_pieces):
+        counter = 0
+        for i in range(self.ncols):
+            for j in range(self.nrows-3): # -3 becuase it is connect 4
+                aux = 0
+                if (self.board[j][i] == -piece) or (self.board[j+1][i] == -piece) or \
+                (self.board[j+2][i] == -piece) or (self.board[j+3][i] == -piece):
+                    continue
+                if self.board[j][i] == piece:
+                    aux += 1
+                if self.board[j+1][i] == piece:
+                    aux += 1
+                if self.board[j+2][i] == piece:
+                    aux += 1
+                if self.board[j+3][i] == piece:
+                    aux += 1
+                if aux == n_pieces:
+                    counter += 1
+        return counter
+
+    def _horizontal_groups_of_4(self, piece, n_pieces):
+        counter = 0
+        for i in range(self.nrows):
+            for j in range(self.ncols-3): # -3 becuase it is connect 4
+                aux = 0
+                if (self.board[i][j] == -piece) or (self.board[i][j+1] == -piece) or \
+                (self.board[i][j+2] == -piece) or (self.board[i][j+3] == -piece):
+                    continue
+                if self.board[i][j] == piece:
+                    aux += 1
+                if self.board[i][j+1] == piece:
+                    aux += 1
+                if self.board[i][j+2] == piece:
+                    aux += 1
+                if self.board[i][j+3] == piece:
+                    aux += 1
+                if aux == n_pieces:
+                    counter += 1
+        return counter
+
+    def _diagonal_ppal_groups_of_4(self, piece, n_pieces):
+        counter = 0
+        for i in range(self.ncols-3):
+            for j in range(3, self.nrows): # 3 becuase it is connect 4
+                aux = 0
+                if (self.board[j][i] == -piece) or (self.board[j-1][i+1] == -piece) or \
+                (self.board[j-2][i+2] == -piece) or (self.board[j-3][i+3] == -piece):
+                    continue
+                if self.board[j][i] == piece:
+                    aux += 1
+                if self.board[j-1][i+1] == piece:
+                    aux += 1
+                if self.board[j-2][i+2] == piece:
+                    aux += 1
+                if self.board[j-3][i+3] == piece:
+                    aux += 1
+                if aux == n_pieces:
+                    counter += 1
+        return counter
+
+    def _diagonal_neg_groups_of_4(self, piece, n_pieces):
+        counter = 0
+        for i in range(self.ncols-3):
+            for j in range(self.nrows-3): # 3 becuase it is connect 4
+                aux = 0
+                if (self.board[j][i] == -piece) or (self.board[j+1][i+1] == -piece) or \
+                (self.board[j+2][i+2] == -piece) or (self.board[j+3][i+3] == -piece):
+                    continue
+                if self.board[j][i] == piece:
+                    aux += 1
+                if self.board[j+1][i+1] == piece:
+                    aux += 1
+                if self.board[j+2][i+2] == piece:
+                    aux += 1
+                if self.board[j+3][i+3] == piece:
+                    aux += 1
+                if aux == n_pieces:
+                    counter += 1
+        return counter
+
+    def testing_groups(self, piece):
+        print("Diag ppal 2: ", self._diagonal_neg_groups_of_4(piece, 2))
+        print("Diag ppal 3: ", self._diagonal_neg_groups_of_4(piece, 3))
+        return
+
+
     def get_features(self, piece):
         features = []
         # Total number of pieces
@@ -360,14 +446,11 @@ if __name__ == "__main__":
     # TESTING BUILD_PATTERN AND GET FEATURES
     nrows = 6
     ncols = 7
+
     board = Board(nrows, ncols)
+    board.build_pattern("1231241352463")
     board.print_board()
-
-    board.build_pattern("17263")
-    board.print_board()
-
-    features = board.get_features(1)
-    print(features)
+    board.testing_groups(1)
 
     ###################################################
     # TESTING GUI

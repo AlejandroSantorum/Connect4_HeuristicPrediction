@@ -115,7 +115,7 @@ def curve_fitting(filename, train_test_h, feat_degree):
     xdata_test = xdata[TRAIN_TEST_TH:]
     ydata_train = ydata[:TRAIN_TEST_TH]
     ydata_test = ydata[TRAIN_TEST_TH:]
-    #xdata_train = np.transpose(xdata_train) # <--- curve_fit 
+    #xdata_train = np.transpose(xdata_train) # <--- curve_fit
 
 
     #popt, pcov = curve_fit(expression_func1, xdata_train, ydata_train)
@@ -135,6 +135,4 @@ Y_COL = 11
 FEAT_DEGREE = 2
 
 if __name__ == "__main__":
-
     linear_regression(FILENAME, TRAIN_TEST_TH, FEAT_DEGREE)
-

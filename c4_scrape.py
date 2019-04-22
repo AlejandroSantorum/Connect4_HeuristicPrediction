@@ -40,11 +40,6 @@ def scrape_main(n_examples):
 	pattern = generate_board_pattern()
 	first_url = MAIN_URL + pattern
 
-	#######################################
-	# delete print later
-	print(pattern)
-	#######################################
-
 	# Initializing webdriver (Chrome in this case)
 	driver = webdriver.Chrome()
 
@@ -53,6 +48,7 @@ def scrape_main(n_examples):
 
 	try:
 		for i in range(n_examples):
+			print("N example: ", i)
 			# Opening a new tab to use it later
 			next_tab = "tab"+str(i+1)
 			new_tab_command = "window.open('about:blank', \'"+next_tab+"\');"
@@ -83,10 +79,7 @@ def scrape_main(n_examples):
 
 			# Random URL generator
 			pattern = generate_board_pattern()
-			#######################################
-			# delete print later
-			print(pattern)
-			#######################################
+
 			next_url = MAIN_URL+pattern
 			driver.get(next_url)
 		return n_examples
