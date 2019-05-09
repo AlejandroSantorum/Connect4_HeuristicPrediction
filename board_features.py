@@ -1,3 +1,12 @@
+################################################################################
+#   Authors:                                                                   #
+#       · Alejandro Santorum Varela - alejandro.santorum@estudiante.uam.es     #
+#                                     alejandro.santorum@gmail.com             #
+#   Date: Apr 14, 2019                                                         #
+#   File: board_features.py                                                    #
+#   Project: Connect4 - Predicting heuristic values                            #
+#   Version: 1.1                                                               #
+################################################################################
 from connect_4 import *
 from c4_scrape import *
 import threading as thr
@@ -15,6 +24,9 @@ def init_features_file():
     f.close()
 
 
+###########################################################
+#   It stores in a file the board features and its points
+###########################################################
 def store_features(filename, features_array):
     # Red light
     lock.acquire()
@@ -27,6 +39,9 @@ def store_features(filename, features_array):
     lock.release()
 
 
+###########################################################
+#   It checks if an array of points is empty
+###########################################################
 def empty_points(points_array):
     for i in range(NCOLS):
         if points_array[i] != '':
@@ -34,6 +49,10 @@ def empty_points(points_array):
     return True
 
 
+###########################################################
+#   It builds a board given a pattern and calculates its
+#   features, storing them into a file
+###########################################################
 def features_main(pattern, points_array):
     if empty_points(points_array)==True:
         board = Board(NROWS, NCOLS)
@@ -49,8 +68,6 @@ def features_main(pattern, points_array):
                 board.go_back(i)
                 # Adding points
                 features_array.append(int(points[i]))
-                # Writing features in a file
-                store_features(FEATURES_FILE, features_array)
 
     else:
         board = Board(NROWS, NCOLS)
@@ -65,5 +82,5 @@ def features_main(pattern, points_array):
                 board.go_back(i)
                 # Adding points
                 features_array.append(int(points_array[i]))
-                # Writing features in a file
-                store_features(FEATURES_FILE, features_array)
+    # Writing features in a file
+    store_features(FEATURES_FILE, features_array)

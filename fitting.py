@@ -1,3 +1,12 @@
+################################################################################
+#   Authors:                                                                   #
+#       · Alejandro Santorum Varela - alejandro.santorum@estudiante.uam.es     #
+#                                     alejandro.santorum@gmail.com             #
+#   Date: Apr 14, 2019                                                         #
+#   File: fitting.py                                                           #
+#   Project: Connect4 - Predicting heuristic values                            #
+#   Version: 1.1                                                               #
+################################################################################
 import time
 import numpy as np
 from scipy.optimize import curve_fit
@@ -31,7 +40,7 @@ def expression_func1(X, th0, th1, th2, th3, th4, th5, th6, th7, th8, th9, th10, 
     return res
 
 
-def my_test(xdata_test, ydata_test, popt, intercepter, tol):
+def my_test2(xdata_test, ydata_test, popt, intercepter, tol):
     good = 0
     m, n_feat = xdata_test.shape
     for i in range(m):
@@ -51,7 +60,7 @@ def my_test(xdata_test, ydata_test, popt, intercepter, tol):
             continue
     return (good/m)*100
 
-def my_test2(y_pred, y_test, tol):
+def my_test(y_pred, y_test, tol):
     good = 0
     length = len(y_pred)
     for i in range(length):
@@ -67,7 +76,7 @@ def my_test2(y_pred, y_test, tol):
 
 
 def linear_regression(filename, train_test_h, feat_degree):
-    # Reading
+    # Reading file
     data = np.loadtxt(filename, delimiter=SEP, usecols=range(Y_COL))
     ydata = np.loadtxt(filename, usecols=Y_COL)
 
@@ -98,7 +107,7 @@ def linear_regression(filename, train_test_h, feat_degree):
     # Explained variance score: 1 is perfect prediction
     print('Variance score: %.2f' % r2_score(ydata_test, y_pred))
 
-    print("My test: ", my_test2(y_pred, ydata_test, 1))
+    print("My test: ", my_test(y_pred, ydata_test, 1))
 
 
 def curve_fitting(filename, train_test_h, feat_degree):

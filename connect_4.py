@@ -1,3 +1,12 @@
+################################################################################
+#   Authors:                                                                   #
+#       · Alejandro Santorum Varela - alejandro.santorum@estudiante.uam.es     #
+#                                     alejandro.santorum@gmail.com             #
+#   Date: Apr 14, 2019                                                         #
+#   File: connect_4.py                                                         #
+#   Project: Connect4 - Predicting heuristic values                            #
+#   Version: 1.1                                                               #
+################################################################################
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -14,10 +23,14 @@ STOP_REASON = 1
 class Board():
 
     def __init__(self, nrows , ncols):
+        # Number of board rows
         self.nrows = nrows
+        # Number of board columns
         self.ncols = ncols
+        # Board is represented as a matrix
         self.board = np.zeros((nrows, ncols))
-        self.height = np.zeros(7)
+        # Array of heigths (number of pieces placed in each col)
+        self.height = np.zeros(ncols)
 
     def print_board(self):
         print(self.board)
@@ -121,41 +134,51 @@ class Board():
 
     def winner(self , row , col , piece):
         if (self.count_horizontal(row , col , piece ) == 4):
-            #print("Winner :: " , piece )
             return piece
         if (self.count_vertical(row , col , piece ) == 4):
-            #print("Winner:: " , piece )
             return piece
         if (self.count_diag_asc(row, col , piece) == 4):
-            #print("Winner:: " , piece )
             return piece
         if (self.count_diag_desc(row , col , piece) == 4):
-            #print("Winner:: " , piece)
             return piece
         return 0
 
+    ###############################################
+    #   It inserts a piece in a given column
+    #   User has to check the board status
+    #   before inserting the piece, because
+    #   this function does not check it
+    ###############################################
     def insert(self , piece , col):
-        #check before inserting a new piece
         counter = 0
         for i in range(self.nrows):
             counter += np.abs(self.board[i][col])
-        pos = 6 - (counter+1)
+        pos = self.nrows - (counter+1)
         self.board[int(pos)][col] = piece
         self.height[col] += 1
         return int(pos)
 
+    ###############################################
+    #   It removes the last piece played in the
+    #   provided column
+    ###############################################
     def go_back(self, col):
         for i in range(self.nrows):
             if self.board[i][col] != 0:
                 self.board[i][col] = 0
                 return
 
+    ###############################################
+    #   It builds a board given a status pattern,
+    #   truncating it if the pattern represents
+    #   a winner status
+    ###############################################
     def build_pattern(self, pattern):
         length = len(pattern)
         current_board = ""
         current_piece = 1
         for i in range(length):
-            col_move = int(pattern[i])-1
+            col_move = int(pattern[i])-1 # Pattern indexes in 1
             inserted_row = self.insert(current_piece, col_move)
             if self.winner(inserted_row, col_move, current_piece):
                 self.go_back(col_move)
@@ -324,11 +347,6 @@ class Board():
                     counter += 1
         return counter
 
-    def testing_groups(self, piece):
-        print("Diag ppal 2: ", self._diagonal_neg_groups_of_4(piece, 2))
-        print("Diag ppal 3: ", self._diagonal_neg_groups_of_4(piece, 3))
-        return
-
 
     def get_features(self, piece):
         features = []
@@ -442,20 +460,20 @@ class gui():
 
 
 if __name__ == "__main__":
-    ###################################################
-    # TESTING BUILD_PATTERN AND GET FEATURES
     nrows = 6
     ncols = 7
-
-    board = Board(nrows, ncols)
-    board.build_pattern("1231241352463")
-    board.print_board()
-    board.testing_groups(1)
+    ###################################################
+    # TESTING BUILD_PATTERN AND GET FEATURES
+    #board = Board(nrows, ncols)
+    #board.build_pattern("1231241352463")
+    #board.print_board()
+    #board.testing_groups(1)
 
     ###################################################
     # TESTING GUI
-    #test.evolve_game()
-    #windows = tk.Tk()
-    #windows.geometry("1200x1000")
-    #mainWIndow = gui(windows , 6 , 7,Board(6 , 7))
-    #windows.mainloop()
+    test = Board(nrows, ncols)
+    test.evolve_game()
+    windows = tk.Tk()
+    windows.geometry("1200x1000")
+    mainWIndow = gui(windows , 6 , 7,Board(6 , 7))
+    windows.mainloop()
